@@ -1,0 +1,28 @@
+services:
+  postgresdb:
+    container_name: postgres-container
+    image: postgres:16.1
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_ENV_USER:-root}
+      POSTGRES_PASSWORD: ${POSTGRES_ENV_PASSWORD:-root}
+      POSTGRES_DB: ${POSTGRES_ENV_DB:-postgres}
+    ports:
+      - 5430:5432
+    volumes:
+      - ./postgres-volume:/var/lib/postgresql/data
+
+  pgadmin:
+    container_name: pgadmin-container
+    image: dpage/pgadmin4:9.0.0
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-root@gmail.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-root}
+      PGADMIN_DEFAULT_ADDRESS: 6000
+      PGADMIN_LISTEN_PORT: 6000
+    ports:
+      - 7000:6000
+    volumes:
+      - ./pgadmin-volume:/var/lib/pgadmin
+

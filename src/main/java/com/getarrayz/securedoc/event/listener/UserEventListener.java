@@ -1,0 +1,24 @@
+package com.getarrayz.securedoc.event.listener;
+
+import com.getarrayz.securedoc.event.UserEvent;
+import com.getarrayz.securedoc.service.EmailService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Component;
+
+@RequiredArgsConstructor
+@Component
+public class UserEventListener {
+
+    private final EmailService emailService;
+
+    @EventListener
+    public void onUserEvent(UserEvent userEvent) {
+        switch (userEvent.getType()) {
+            case REGISTRATION -> emailService.sendNewAccountEmail(userEvent.getUser().getFirstName(), userEvent.getUser().getEmail(), (String) userEvent.getData().get("key"));
+            case RESETPASSWORD -> emailService.sendPasswordResetEmail(userEvent.getUser().getFirstName(), userEvent.getUser().getEmail(), (String) userEvent.getData().get("key"));
+            default -> {}
+        }
+    }
+
+}
