@@ -1,7 +1,5 @@
 package com.getarrayz.securedoc.utils;
 
-import static java.lang.StringTemplate.STR;
-
 public class EmailUtils {
 
     //todo переделать это безумие, такие шаблоны - это не серьезно

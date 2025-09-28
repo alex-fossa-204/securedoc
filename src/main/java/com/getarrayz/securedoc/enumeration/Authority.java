@@ -11,7 +11,7 @@ import static com.getarrayz.securedoc.constant.Permissions.USER_AUTHORITIES;
 
 
 //todo такое себе решение, эти данные следует вынести в отдельный компонент, данные о ролях должны храниться в базе данныех
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 @Getter
 public enum Authority {
 

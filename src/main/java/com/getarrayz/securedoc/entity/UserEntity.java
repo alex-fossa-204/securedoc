@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
-@Builder
 @Entity
 @Table(name = "users")
 @JsonInclude(value = JsonInclude.Include.NON_DEFAULT)
