@@ -37,29 +37,29 @@ public abstract class Auditable {
             @SequenceGenerator(name = "primary_key_seq", sequenceName = "primary_key_seq", allocationSize = 1)
     })
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "primary_key_seq")
-    private Long id;
+    protected Long id;
 
     @Column(name = "reference_id")
     @NotNull
-    private String referenceId = new AlternativeJdkIdGenerator().generateId().toString();
+    protected String referenceId = new AlternativeJdkIdGenerator().generateId().toString();
 
     @Column(name = "created_by", nullable = false, updatable = false)
     @NotNull
-    private Long createdBy;
+    protected Long createdBy;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreatedDate
     @NotNull
-    private LocalDateTime createdAt;
+    protected LocalDateTime createdAt;
 
     @Column(name = "updated_by")
     @NotNull
-    private Long updatedBy;
+    protected Long updatedBy;
 
     @Column(name = "updated_at", nullable = false)
     @CreatedDate
     @NotNull
-    private LocalDateTime updatedAt;
+    protected LocalDateTime updatedAt;
 
     @PrePersist
     public void beforePersist() {

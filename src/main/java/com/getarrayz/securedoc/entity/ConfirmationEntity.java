@@ -10,6 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -36,7 +37,7 @@ import org.hibernate.annotations.Parameter;
 public class ConfirmationEntity extends Auditable {
 
     @Column(name = "confirmation_key")
-    @GeneratedValue(strategy = GenerationType.UUID)
+//    @GeneratedValue(strategy = GenerationType.UUID)
 //    @GenericGenerator(
 //            name = "UUID",
 //            strategy = "org.hibernate.id.UUIDGenerator",
