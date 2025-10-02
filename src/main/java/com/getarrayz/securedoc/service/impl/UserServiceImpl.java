@@ -1,8 +1,7 @@
 package com.getarrayz.securedoc.service.impl;
 
-import com.getarrayz.securedoc.entity.ConfirmationEntity;
-import com.getarrayz.securedoc.entity.CredentialEntity;
-import com.getarrayz.securedoc.entity.UserEntity;
+import com.getarrayz.securedoc.entity.RoleEntity;
+import com.getarrayz.securedoc.enumeration.Authority;
 import com.getarrayz.securedoc.enumeration.EventType;
 import com.getarrayz.securedoc.event.UserEvent;
 import com.getarrayz.securedoc.repository.ConfirmationRepository;
@@ -17,10 +16,11 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Optional;
 
-import static com.getarrayz.securedoc.service.impl.UserServiceImpl.UserServiceHelper.createConfirmationEntity;
-import static com.getarrayz.securedoc.service.impl.UserServiceImpl.UserServiceHelper.createCredentialEntity;
-import static com.getarrayz.securedoc.service.impl.UserServiceImpl.UserServiceHelper.createNewUser;
+import static com.getarrayz.securedoc.utils.UserUtils.createConfirmationEntity;
+import static com.getarrayz.securedoc.utils.UserUtils.createCredentialEntity;
+import static com.getarrayz.securedoc.utils.UserUtils.createNewUser;
 
 @RequiredArgsConstructor
 @Service
@@ -47,7 +47,8 @@ public class UserServiceImpl implements UserService {
                 createNewUser(firstName,
                         lastName,
                         email,
-                        password
+                        password,
+                        getDefaultRole()
                 )
         );
 
@@ -68,37 +69,17 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    static class UserServiceHelper {
+    @Override
+    public RoleEntity getRoleName(String name) {
+        return Optional.ofNullable(name)
+                .flatMap(roleRepository::findByNameIgnoreCase)
+                .orElseThrow(() -> new RuntimeException("Role not found"));
+    }
 
-        static UserEntity createNewUser(
-                String firstName,
-                String lastName,
-                String email,
-                String password
-        ) {
-            return UserEntity.builder()
-                    .firstName(firstName)
-                    .lastName(lastName)
-                    .email(email)
-                    .build();
-        }
-
-        static CredentialEntity createCredentialEntity(
-                UserEntity userEntity,
-                String password
-        ) {
-            return CredentialEntity.builder()
-                    .userEntity(userEntity)
-                    .password(password)
-                    .build();
-        }
-
-        static ConfirmationEntity createConfirmationEntity(UserEntity userEntity) {
-            return ConfirmationEntity.builder()
-                    .userEntity(userEntity)
-                    .build();
-        }
-
+    private RoleEntity getDefaultRole() {
+        return Optional.of(Authority.USER.name())
+                .flatMap(roleRepository::findByNameIgnoreCase)
+                .orElseThrow(() -> new RuntimeException("Role not found"));
     }
 
 }

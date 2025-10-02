@@ -1,5 +1,7 @@
 package com.getarrayz.securedoc.service;
 
+import com.getarrayz.securedoc.entity.RoleEntity;
+
 public interface UserService {
 
     void createUser(
@@ -8,5 +10,7 @@ public interface UserService {
             String email,
             String password
     );
+
+    RoleEntity getRoleName(String name);
 
 }
