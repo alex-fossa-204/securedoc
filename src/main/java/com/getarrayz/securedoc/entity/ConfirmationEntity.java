@@ -25,32 +25,23 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Parameter;
 
-@AllArgsConstructor
-@NoArgsConstructor
+import java.util.UUID;
+
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
+import static jakarta.persistence.FetchType.EAGER;
+
 @Getter
 @Setter
 @ToString
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "confirmations")
-@JsonInclude(value = JsonInclude.Include.NON_DEFAULT)
+@JsonInclude(NON_DEFAULT)
 public class ConfirmationEntity extends Auditable {
-
-    @Column(name = "confirmation_key")
-//    @GeneratedValue(strategy = GenerationType.UUID)
-//    @GenericGenerator(
-//            name = "UUID",
-//            strategy = "org.hibernate.id.UUIDGenerator",
-//            parameters = {
-//                    @Parameter(
-//                            name = "uuid_gen_strategy_class",
-//                            value = "org.hibernate.id.uuid.CustomVersionOneStrategy"
-//                    )
-//            }
-//    )
     private String key;
-
-    @OneToOne(targetEntity = UserEntity.class, fetch = FetchType.EAGER) //todo ибавиться от FETCH в будущем, переделать на графы и убрать OneToOne
+    @OneToOne(targetEntity = UserEntity.class, fetch = EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
@@ -58,4 +49,8 @@ public class ConfirmationEntity extends Auditable {
     @JsonProperty("user_id")
     private UserEntity userEntity;
 
+    public ConfirmationEntity(UserEntity userEntity) {
+        this.userEntity = userEntity;
+        this.key = UUID.randomUUID().toString();
+    }
 }

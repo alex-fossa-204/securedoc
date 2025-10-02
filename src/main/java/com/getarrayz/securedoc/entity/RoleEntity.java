@@ -1,23 +1,28 @@
 package com.getarrayz.securedoc.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.getarrayz.securedoc.enumeration.Authority;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-@AllArgsConstructor
-@NoArgsConstructor
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
+
 @Getter
 @Setter
 @ToString
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "roles")
-@JsonInclude(value = JsonInclude.Include.NON_DEFAULT)
+@JsonInclude(NON_DEFAULT)
 public class RoleEntity extends Auditable {
-
     private String name;
-
-    private String authorities;
-
+    private Authority authorities;
 }

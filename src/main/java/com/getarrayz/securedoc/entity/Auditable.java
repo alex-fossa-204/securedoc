@@ -10,87 +10,51 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.AlternativeJdkIdGenerator;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
-import java.util.Optional;
+
+import static java.time.LocalDateTime.now;
 
 
-@EntityListeners(value = {
-        AuditingEntityListener.class
-})
-@JsonIgnoreProperties(
-        value = {
-                "createdAt",
-                "updatedAt"
-        },
-        allowGetters = true
-)
-@MappedSuperclass
 @Getter
 @Setter
+@MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
+@JsonIgnoreProperties(value = { "createdAt", "updatedAt" }, allowGetters = true)
 public abstract class Auditable {
-
     @Id
-    @Column(name = "id", updatable = false)
-    @NotNull
-    @SequenceGenerators(value = {
-            @SequenceGenerator(name = "primary_key_seq", sequenceName = "primary_key_seq", allocationSize = 1)
-    })
+    @SequenceGenerator(name = "primary_key_seq", sequenceName = "primary_key_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "primary_key_seq")
-    protected Long id;
-
-    @Column(name = "reference_id")
+    @Column(name = "id", updatable = false)
+    private Long id;
+    private String referenceId = new AlternativeJdkIdGenerator().generateId().toString();
     @NotNull
-    protected String referenceId = new AlternativeJdkIdGenerator().generateId().toString();
-
-    @Column(name = "created_by", nullable = false, updatable = false)
+    private Long createdBy;
     @NotNull
-    protected Long createdBy;
+    private Long updatedBy;
 
+    @NotNull
+    @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
     @CreatedDate
-    @NotNull
-    protected LocalDateTime createdAt;
-
-    @Column(name = "updated_by")
-    @NotNull
-    protected Long updatedBy;
-
     @Column(name = "updated_at", nullable = false)
-    @CreatedDate
-    @NotNull
-    protected LocalDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
     @PrePersist
     public void beforePersist() {
-        final var userId = RequestContext.getUserId();
-
-        Optional.ofNullable(userId).ifPresentOrElse(
-                id -> {
-                    this.setCreatedBy(id);
-                    this.setCreatedAt(LocalDateTime.now());
-                    this.setUpdatedBy(id);
-                    this.setUpdatedAt(LocalDateTime.now());
-                },
-                () -> {
-                    throw new RuntimeException("Не удалось сохранить сущность без уникального userId пользователя");
-                }
-        );
+        var userId = 0L;//RequestContext.getUserId();
+        //if(userId == null) { throw new ApiException("Cannot persist entity without user ID in Request Context for this thread"); }
+        setCreatedAt(now());
+        setCreatedBy(userId);
+        setUpdatedBy(userId);
+        setUpdatedAt(now());
     }
 
     @PreUpdate
     public void beforeUpdate() {
-        final var userId = RequestContext.getUserId();
-
-        Optional.ofNullable(userId).ifPresentOrElse(
-                id -> {
-                    this.setUpdatedBy(id);
-                    this.setUpdatedAt(LocalDateTime.now());
-                },
-                () -> {
-                    throw new RuntimeException("Не удалось обновить сущность без уникального userId пользователя");
-                }
-        );
+        var userId = 0L ; //RequestContext.getUserId();
+        //if(userId == null) { throw new ApiException("Cannot update entity without user ID in Request Context for this thread"); }
+        setUpdatedAt(now());
+        setUpdatedBy(userId);
     }
-
 }
